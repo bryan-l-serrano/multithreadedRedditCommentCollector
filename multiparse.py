@@ -1,5 +1,5 @@
 #!usr/bin/env python
-import praw, threading, re, sys
+import praw, threading, re, sys, time
 
 if len(sys.argv) == 2:
     number = int(sys.argv[1])
@@ -26,9 +26,15 @@ def parse():
 
 threads = []
 for i in range(number):
+    print(threading.activeCount())
     downloadThread = threading.Thread(target=parse)
     threads.append(downloadThread)
     downloadThread.start()
+    #limits the number of threads to 4 at a time 
+    if threading.activeCount() == 5: 
+        while threading.activeCount() == 5:
+            pass
+
 
 for things in threads:
     things.join()
